@@ -5,8 +5,7 @@
 typedef struct pei
 {
     int *array;
-    int inicio;
-    int fim;
+    int tamanho;
 } PEI;
 
 void merge(int *array, int inicio, int meio, int fim)
@@ -42,7 +41,7 @@ void merge(int *array, int inicio, int meio, int fim)
     }
     for (j = 0; j < tamanho; j++)
     {
-        array[j] = a[j];
+        array[inicio + j] = a[j];
     }
     free(a);
 }
@@ -67,34 +66,35 @@ int main()
     PEI par;
     impar.array = malloc(linhas * sizeof(int));
     par.array = malloc(linhas * sizeof(int));
-    impar.inicio = 0;
-    par.inicio = 0;
-    impar.fim = 0;
-    par.fim = 0;
+    impar.tamanho = 0;
+    par.tamanho = 0;
     for (i = 0; i < linhas; i++)
     {
         scanf("%d", &x);
         if (x % 2 == 0)
         {
-            par.array[par.fim] = x;
-            par.fim++;
+            par.array[par.tamanho] = x;
+            par.tamanho++;
         }
         else
         {
-            impar.array[impar.fim] = x;
-            impar.fim++;
+            impar.array[impar.tamanho] = x;
+            impar.tamanho++;
         }
     }
-    merge_sort(par.array, par.inicio, par.fim - 1);
-    merge_sort(impar.array, impar.inicio, impar.fim - 1);
-    for (i = 0; i < par.fim; i++)
+    merge_sort(par.array, 0, par.tamanho - 1);
+    merge_sort(impar.array, 0, impar.tamanho - 1);
+    for (i = 0; i < par.tamanho; i++)
     {
         printf("%d\n", par.array[i]);
     }
-    for (i = impar.fim - 1; i >= impar.inicio; i--)
+    for (i = impar.tamanho - 1; i >= 0; i--)
     {
         printf("%d\n", impar.array[i]);
     }
+
+    free(par.array);
+    free(impar.array);
 
     return 0;
 }
