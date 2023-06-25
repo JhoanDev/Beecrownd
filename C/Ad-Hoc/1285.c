@@ -12,15 +12,12 @@ int main()
             sprintf(numero, "%d", i);
             for (j = 0; j < strlen(numero); j++)
             {
-                for (k = 0; k < strlen(numero); k++)
+                for (k = j + 1; k < strlen(numero); k++)
                 {
-                    if (k != j)
+                    if (numero[j] == numero[k])
                     {
-                        if (numero[j] == numero[k])
-                        {
-                            achou = 1;
-                            break;
-                        }
+                        achou = 1;
+                        break;
                     }
                 }
             }
