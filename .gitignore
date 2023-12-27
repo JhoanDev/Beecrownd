@@ -6,3 +6,52 @@
 .vscode/extensions.json
 *.code-workspace
 .bin/*
+
+# Arquivos de compilação
+*.o
+*.out
+
+# Arquivos gerados pela compilação
+bin/
+obj/
+
+# Arquivos de configuração do compilador
+*.dSYM/
+*.su
+
+# Arquivos de dependência
+*.d
+
+# Executáveis
+a.out
+
+# Byte-compiled / optimized Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de ambiente virtual
+venv/
+env/
+
+# Arquivos de configuração
+*.pyc
+*.pyo
+*.pyd
+
+# Logs e arquivos temporários
+*.log
+*.sqlite3
+*.sqlite
+*.swp
+*.db
+*.db-journal
+
+# Arquivos de cache
+__pycache__/
+.cache/
+.cpython/
+
+# Ambiente Jupyter Notebook
+.ipynb_checkpoints/
