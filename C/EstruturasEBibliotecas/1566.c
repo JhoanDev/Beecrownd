@@ -39,6 +39,5 @@ int main()
         printf("\n");
         free(alturas);
     }
-
     return 0;
 }
