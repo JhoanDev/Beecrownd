@@ -24,6 +24,8 @@ obj/
 
 # Executáveis
 a.out
+main
+*.exe
 
 # Byte-compiled / optimized Python files
 __pycache__/
@@ -55,5 +57,3 @@ __pycache__/
 
 # Ambiente Jupyter Notebook
 .ipynb_checkpoints/
-
-.exe
