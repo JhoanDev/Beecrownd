@@ -1,28 +1,29 @@
-# Atividades do BeeCronwd
+# BeeCronwd Questions
 
-## Tópicos
+### Visão Geral
 
-- [Introdução](#introdução)
-- [Descrição](#descrição)
-- [Como acessar as questões](#como-acessar-as-questões)
-- [Tecnologias utilizadas](#tecnologias-utilizadas)
+Bem-vindo ao meu repositório! Aqui você encontrará uma coleção de códigos que desenvolvi baseados nas questões do [BeeCronwd](https://www.beecrowd.com.br).
 
-### Introdução
+### Estrutura do Repositório
 
-Bem-vindos ao meu repositório. O objetivo deste repositório é armazenar e documentar alguns dos meus códigos desenvolvidos com base nas questões do [BeeCronwd](https://www.beecrowd.com.br).
+O repositório está organizado em pastas, cada uma correspondendo a um tipo de questão. Dentro de cada pasta, as questões estão nomeadas conforme seus números no [BeeCronwd](https://www.beecrowd.com.br).
 
-### Descrição
+### Acesso às Questões
 
-Vocês podem observar que há pastas para cada linguagem de programação. Dentro de cada pasta, existem subpastas correspondentes aos tipos de questões realizadas. E dentro de cada subpasta, as questões estão nomeadas de acordo com o seu número no site [BeeCronwd](https://www.beecrowd.com.br).
+Para acessar as questões diretamente no site, siga estes passos:
 
-### Como acessar as questões
+1. Acesse o [BeeCronwd](https://www.beecrowd.com.br) e faça o login ou registre-se, se ainda não o fez.
+2. Use a barra de pesquisa para selecionar "Problemas".
+3. Insira o número da questão correspondente, conforme os números listados neste repositório.
 
-Para acessar as questões correspondentes, sigam os passos abaixo:
+### Tecnologias Utilizadas
 
-- Acessem o site [BeeCronwd](https://www.beecrowd.com.br) (basta clicar no link).
-- Façam o registro e efetuem o login no site.
-- Utilizem a barra de pesquisa para selecionar "Problemas" e insiram o número da questão de acordo com os números presentes no repositório.
+Atualmente, as linguagens que estou utilizando para resolver as questões são:
 
-### Tecnologias utilizadas
+- `C`
+- `Python`
+- `C++`
 
-Atualmente, tenho utilizado as linguagens `C` e `Python` para solucionar as questões.
+### Contribuições
+
+Se você encontrar algum erro ou tiver sugestões para melhorias, sinta-se à vontade para abrir uma issue ou enviar um pull request.
