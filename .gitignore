@@ -57,3 +57,6 @@ __pycache__/
 
 # Ambiente Jupyter Notebook
 .ipynb_checkpoints/
+
+# arquivos entrada
+entrada.txt
