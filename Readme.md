@@ -1,29 +1,27 @@
-# BeeCronwd Questions
+# 🧠 Competitive Programming Notes & Solutions
 
 ### Visão Geral
 
-Bem-vindo ao meu repositório! Aqui você encontrará uma coleção de códigos que desenvolvi baseados nas questões do [BeeCronwd](https://www.beecrowd.com.br).
+Este repositório é dedicado aos meus estudos, anotações e soluções de problemas relacionados à  **programação competitiva** . Aqui você encontrará códigos comentados, dicas, estratégias e resoluções de problemas de plataformas como o [BeeCrowd](https://www.beecrowd.com.br), entre outras.
 
 ### Estrutura do Repositório
 
-O repositório está organizado em pastas, cada uma correspondendo a um tipo de questão. Dentro de cada pasta, as questões estão nomeadas conforme seus números no [BeeCronwd](https://www.beecrowd.com.br).
+* `beecrowd/`: soluções de problemas da plataforma BeeCrowd.
 
-### Acesso às Questões
-
-Para acessar as questões diretamente no site, siga estes passos:
-
-1. Acesse o [BeeCronwd](https://www.beecrowd.com.br) e faça o login ou registre-se, se ainda não o fez.
-2. Use a barra de pesquisa para selecionar "Problemas".
-3. Insira o número da questão correspondente, conforme os números listados neste repositório.
 
 ### Tecnologias Utilizadas
 
-Atualmente, as linguagens que estou utilizando para resolver as questões são:
+As linguagens que estou utilizando nas resoluções são:
 
-- `C`
-- `Python`
-- `C++`
+* `C++` — principal linguagem para competições (velocidade e STL poderosa)
+* `C` — para algoritmos mais "manuais"
+* `Python` — para scripts rápidos
+
+### Como Utilizar
+
+* Navegue pelas pastas e veja os códigos resolvidos.
+* Use os arquivos de anotações para revisar conceitos importantes.
 
 ### Contribuições
 
-Se você encontrar algum erro ou tiver sugestões para melhorias, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+Sinta-se à vontade para abrir issues com dúvidas ou sugestões, ou até enviar pull requests com melhorias e correções!
