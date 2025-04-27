@@ -1,0 +1,6 @@
+NUM_THREADS=8
+NUM_LANCAMENTOS=1000000000
+
+echo "Executando com $NUM_THREADS threads e $NUM_LANCAMENTOS lançamentos"
+./main "$NUM_THREADS" "$NUM_LANCAMENTOS" 
+echo ""
