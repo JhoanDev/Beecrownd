@@ -1,11 +1,9 @@
-#!/bin/bash
 
 VARIAVEIS=20000
 THREADS_LIST=(2 4 8)
 SCHEDULE_LIST=("static" "dynamic" "guided")
 RELATORIO="linear_system.txt"
 
-# Limpa o conteúdo anterior
 echo "Relatório de Execução - $(date)" > "$RELATORIO"
 echo "Variáveis: $VARIAVEIS" >> "$RELATORIO"
 echo "---------------------------------------------" >> "$RELATORIO"
