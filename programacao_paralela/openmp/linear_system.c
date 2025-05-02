@@ -18,18 +18,19 @@ void algoritmo_linhas(SistemaLinear *s);
 void algorimo_colunas(SistemaLinear *s);
 void printa_solucao(SistemaLinear *s);
 void printar_sistema_com_solucao(SistemaLinear *s);
+void algoritmo_linhas_paralelo(SistemaLinear *s, int num_threads);
+void algorimo_colunas_paralelo(SistemaLinear *s, int num_threads);
 
 int main(int argc, char *argv[])
 {
     double start_time, end_time;
     double segs;
-    // int count_ranks = atoi(argv[1]);
+    int count_ranks = atoi(argv[1]);
     int n = atoi(argv[2]);
 
     SistemaLinear sist_1 = criar_sistema(n);
     SistemaLinear sist_2 = criar_sistema(n);
-
-    // SistemaLinear sist_3 = criar_sistema(n);
+    SistemaLinear sist_3 = criar_sistema(n);
     // SistemaLinear sist_4 = criar_sistema(n);
 
     start_time = omp_get_wtime();
@@ -44,10 +45,33 @@ int main(int argc, char *argv[])
     }
 
     start_time = omp_get_wtime();
+    algoritmo_linhas_paralelo(&sist_3, count_ranks);
+    end_time = omp_get_wtime();
+    segs = end_time - start_time;
+    printf("Algoritmo linhas paralelo demorou: %.5lfs\n", segs);
+    if (n < 10)
+    {
+        printar_sistema_com_solucao(&sist_3);
+        printf("=====================================================\n");
+    }
+
+    start_time = omp_get_wtime();
     algorimo_colunas(&sist_2);
     end_time = omp_get_wtime();
     segs = end_time - start_time;
     printf("Algoritmo colunas sequencial demorou: %.5lfs\n", segs);
+
+    if (n < 10)
+    {
+        printar_sistema_com_solucao(&sist_2);
+        printf("=====================================================\n");
+    }
+
+    start_time = omp_get_wtime();
+    algorimo_colunas_paralelo(&sist_2, count_ranks);
+    end_time = omp_get_wtime();
+    segs = end_time - start_time;
+    printf("Algoritmo colunas paralelo demorou: %.5lfs\n", segs);
 
     if (n < 10)
     {
@@ -107,35 +131,6 @@ void liberar_sistema(SistemaLinear *s)
     s->x = NULL;
 }
 
-void algoritmo_linhas(SistemaLinear *s)
-{
-    int lin, col;
-    int n = s->n;
-    for (lin = n - 1; lin >= 0; lin--)
-    {
-        s->x[lin] = s->b[lin];
-        for (col = lin + 1; col < n; col++)
-            s->x[lin] -= s->A[lin][col] * s->x[col];
-        s->x[lin] /= s->A[lin][lin];
-    }
-}
-
-void algorimo_colunas(SistemaLinear *s)
-{
-    int lin, col;
-    int n = s->n;
-
-    for (lin = 0; lin < n; lin++)
-        s->x[lin] = s->b[lin];
-
-    for (col = n - 1; col >= 0; col--)
-    {
-        s->x[col] /= s->A[col][col];
-        for (lin = 0; lin < col; lin++)
-            s->x[lin] -= s->A[lin][col] * s->x[col];
-    }
-}
-
 void printa_solucao(SistemaLinear *s)
 {
     int i;
@@ -155,6 +150,79 @@ void printar_sistema_com_solucao(SistemaLinear *s)
             printf("%6.2f ", s->A[i][j]);
         }
         printf(" | %6.2f  (x[%d] = %.6lf)\n", s->b[i], i, s->x[i]);
+    }
+}
+
+void algoritmo_linhas_paralelo(SistemaLinear *s, int num_threads)
+{
+    int lin, col;
+    int n = s->n;
+    double sum;
+
+#pragma omp parallel num_threads(num_threads) default(none) private(lin) shared(col, s, n, sum)
+    {
+        for (lin = n - 1; lin >= 0; lin--)
+        {
+            sum = 0;
+#pragma omp for schedule(runtime) reduction(- : sum)
+            for (col = lin + 1; col < n; col++)
+                sum -= s->A[lin][col] * s->x[col];
+#pragma omp single
+            {
+                sum += s->b[lin];
+                s->x[lin] = sum / s->A[lin][lin];
+            }
+        }
+    }
+}
+
+void algoritmo_linhas(SistemaLinear *s)
+{
+    int lin, col;
+    int n = s->n;
+    for (lin = n - 1; lin >= 0; lin--)
+    {
+        s->x[lin] = s->b[lin];
+        for (col = lin + 1; col < n; col++)
+            s->x[lin] -= s->A[lin][col] * s->x[col];
+        s->x[lin] /= s->A[lin][lin];
+    }
+}
+
+void algorimo_colunas_paralelo(SistemaLinear *s, int num_threads)
+{
+    int lin, col;
+    int n = s->n;
+
+#pragma omp parallel num_threads(num_threads) default(none) private(lin, col) shared(s, n)
+    {
+#pragma omp for schedule(runtime)
+        for (lin = 0; lin < n; lin++)
+            s->x[lin] = s->b[lin];
+#pragma omp barrier
+        for (col = n - 1; col >= 0; col--)
+        {
+            s->x[col] /= s->A[col][col];
+#pragma omp for schedule(runtime)
+            for (lin = 0; lin < col; lin++)
+                s->x[lin] -= s->A[lin][col] * s->x[col];
+        }
+    }
+}
+
+void algorimo_colunas(SistemaLinear *s)
+{
+    int lin, col;
+    int n = s->n;
+
+    for (lin = 0; lin < n; lin++)
+        s->x[lin] = s->b[lin];
+
+    for (col = n - 1; col >= 0; col--)
+    {
+        s->x[col] /= s->A[col][col];
+        for (lin = 0; lin < col; lin++)
+            s->x[lin] -= s->A[lin][col] * s->x[col];
     }
 }
 
@@ -181,11 +249,11 @@ for (col = n-1; col >= 0; col--) {
 }
 
 
-(a) O laço externo do algoritmo orientado a linhas pode ser paralelizado?
+(a) O laço externo do algoritmo orientado a linhas pode ser paralelizado? não, tem dependencia do valor do laco de dentro
 
-(b) O laço interno do algoritmo orientado a linhas pode ser paralelizado?
+(b) O laço interno do algoritmo orientado a linhas pode ser paralelizado? sim
 
-(c) O segundo laço externo do algoritmo orientado a colunas pode ser paralelizado?
+(c) O segundo laço externo do algoritmo orientado a colunas pode ser paralelizado? não, pode ser que duas threads alterem o mesmo valor  no vetor s->x
 
 (d) O laço interno do algoritmo orientado a colunas pode ser paralelizado?
 
