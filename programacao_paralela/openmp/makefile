@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2 -fopenmp
+CFLAGS = -Wall -fopenmp
 
 # Adiciona .c ao SRC, se não for passado
 SRC ?= calculate_pi.c
