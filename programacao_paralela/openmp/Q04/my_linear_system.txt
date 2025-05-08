@@ -1,0 +1,39 @@
+Relatório de Execução - Thu May  8 08:28:37 PM -03 2025
+Variáveis: 10000
+---------------------------------------------
+[static | Threads: 2]
+Time paralelo: 0.21778s
+Time sequencial: 0.11598s
+
+[static | Threads: 4]
+Time paralelo: 0.11945s
+Time sequencial: 0.11591s
+
+[static | Threads: 8]
+Time paralelo: 0.08699s
+Time sequencial: 0.11769s
+
+[dynamic | Threads: 2]
+Time paralelo: 0.21008s
+Time sequencial: 0.11586s
+
+[dynamic | Threads: 4]
+Time paralelo: 0.14278s
+Time sequencial: 0.13758s
+
+[dynamic | Threads: 8]
+Time paralelo: 0.08655s
+Time sequencial: 0.12409s
+
+[guided | Threads: 2]
+Time paralelo: 0.24617s
+Time sequencial: 0.11613s
+
+[guided | Threads: 4]
+Time paralelo: 0.14030s
+Time sequencial: 0.11576s
+
+[guided | Threads: 8]
+Time paralelo: 0.08650s
+Time sequencial: 0.11702s
+

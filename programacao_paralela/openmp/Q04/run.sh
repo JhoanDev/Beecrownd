@@ -1,8 +1,7 @@
-
-VARIAVEIS=20000
+VARIAVEIS=10000
 THREADS_LIST=(2 4 8)
 SCHEDULE_LIST=("static" "dynamic" "guided")
-RELATORIO="linear_system.txt"
+RELATORIO="my_linear_system.txt"
 
 echo "Relatório de Execução - $(date)" > "$RELATORIO"
 echo "Variáveis: $VARIAVEIS" >> "$RELATORIO"

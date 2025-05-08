@@ -24,23 +24,19 @@ int main(int argc, char *argv[]) {
     int count_ranks = atoi(argv[1]);
     int n = atoi(argv[2]);
 
-    // Criar dois sistemas IDÊNTICOS
     SistemaLinear sist_paralelo = criar_sistema(n);
     SistemaLinear sist_sequencial = criar_sistema(n);
     
-    // Medição versão paralela
     start_time = omp_get_wtime();
     minha_implementacao(&sist_paralelo, count_ranks);
     end_time = omp_get_wtime();
     printf("Time paralelo: %.5lfs\n", end_time - start_time);
 
-    // Medição versão sequencial
     start_time = omp_get_wtime();
     algoritmo_linhas(&sist_sequencial);
     end_time = omp_get_wtime();
     printf("Time sequencial: %.5lfs\n", end_time - start_time);
 
-    // Verificação (opcional) - comparar soluções
     if (n < 10) {
         printf("Solução paralela:\n");
         printar_sistema_com_solucao(&sist_paralelo);

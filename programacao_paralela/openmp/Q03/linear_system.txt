@@ -1,0 +1,39 @@
+Relatório de Execução - Thu May  8 08:25:51 PM -03 2025
+Variáveis: 10000
+---------------------------------------------
+[static | Threads: 2]
+Algoritmo linhas paralelo demorou: 0.06347s
+Algoritmo colunas paralelo demorou: 0.24223s
+
+[static | Threads: 4]
+Algoritmo linhas paralelo demorou: 0.05569s
+Algoritmo colunas paralelo demorou: 0.16734s
+
+[static | Threads: 8]
+Algoritmo linhas paralelo demorou: 0.04850s
+Algoritmo colunas paralelo demorou: 0.09867s
+
+[dynamic | Threads: 2]
+Algoritmo linhas paralelo demorou: 1.08258s
+Algoritmo colunas paralelo demorou: 2.54522s
+
+[dynamic | Threads: 4]
+Algoritmo linhas paralelo demorou: 1.08749s
+Algoritmo colunas paralelo demorou: 2.02650s
+
+[dynamic | Threads: 8]
+Algoritmo linhas paralelo demorou: 1.23958s
+Algoritmo colunas paralelo demorou: 2.27863s
+
+[guided | Threads: 2]
+Algoritmo linhas paralelo demorou: 0.06802s
+Algoritmo colunas paralelo demorou: 0.24350s
+
+[guided | Threads: 4]
+Algoritmo linhas paralelo demorou: 0.06207s
+Algoritmo colunas paralelo demorou: 0.18115s
+
+[guided | Threads: 8]
+Algoritmo linhas paralelo demorou: 0.08148s
+Algoritmo colunas paralelo demorou: 0.14497s
+
