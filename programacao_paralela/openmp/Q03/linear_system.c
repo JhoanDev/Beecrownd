@@ -28,57 +28,57 @@ int main(int argc, char *argv[])
     int count_ranks = atoi(argv[1]);
     int n = atoi(argv[2]);
 
-    // SistemaLinear sist_1 = criar_sistema(n);
-    // SistemaLinear sist_2 = criar_sistema(n);
+    SistemaLinear sist_1 = criar_sistema(n);
+    SistemaLinear sist_2 = criar_sistema(n);
     SistemaLinear sist_3 = criar_sistema(n);
     SistemaLinear sist_4 = criar_sistema(n);
 
-    /*     start_time = omp_get_wtime();
-        algoritmo_linhas(&sist_1);
-        end_time = omp_get_wtime();
-        segs = end_time - start_time;
-        printf("Algoritmo linhas sequencial demorou: %.5lfs\n", segs);
-        if (n < 10)
-        {
-            printar_sistema_com_solucao(&sist_1);
-            printf("=====================================================\n");
-        } */
+    start_time = omp_get_wtime();
+    algoritmo_linhas(&sist_1);
+    end_time = omp_get_wtime();
+    segs = end_time - start_time;
+    printf("Algoritmo linhas sequencial demorou: %.5lfs\n", segs);
+    if (n < 10)
+    {
+        printar_sistema_com_solucao(&sist_1);
+        printf("=====================================================\n");
+    }
 
     start_time = omp_get_wtime();
-    algoritmo_linhas_paralelo(&sist_3, count_ranks);
+    algoritmo_linhas_paralelo(&sist_2, count_ranks);
     end_time = omp_get_wtime();
     segs = end_time - start_time;
     printf("Algoritmo linhas paralelo demorou: %.5lfs\n", segs);
+    if (n < 10)
+    {
+        printar_sistema_com_solucao(&sist_2);
+        printf("=====================================================\n");
+    }
+
+    start_time = omp_get_wtime();
+    algorimo_colunas(&sist_3);
+    end_time = omp_get_wtime();
+    segs = end_time - start_time;
+    printf("Algoritmo colunas sequencial demorou: %.5lfs\n", segs);
     if (n < 10)
     {
         printar_sistema_com_solucao(&sist_3);
         printf("=====================================================\n");
     }
 
-    /*     start_time = omp_get_wtime();
-        algorimo_colunas(&sist_2);
-        end_time = omp_get_wtime();
-        segs = end_time - start_time;
-        printf("Algoritmo colunas sequencial demorou: %.5lfs\n", segs);
-
-        if (n < 10)
-        {
-            printar_sistema_com_solucao(&sist_2);
-            printf("=====================================================\n");
-        } */
-
     start_time = omp_get_wtime();
     algorimo_colunas_paralelo(&sist_4, count_ranks);
     end_time = omp_get_wtime();
     segs = end_time - start_time;
     printf("Algoritmo colunas paralelo demorou: %.5lfs\n", segs);
-
     if (n < 10)
     {
         printar_sistema_com_solucao(&sist_4);
         printf("=====================================================\n");
     }
 
+    liberar_sistema(&sist_1);
+    liberar_sistema(&sist_2);
     liberar_sistema(&sist_3);
     liberar_sistema(&sist_4);
 
@@ -157,20 +157,20 @@ void algoritmo_linhas_paralelo(SistemaLinear *s, int num_threads)
 {
     int lin, col;
     int n = s->n;
-    double sum;
+    double sum = 0.0;
 
 #pragma omp parallel num_threads(num_threads) default(none) private(lin) shared(col, s, n, sum)
     {
         for (lin = n - 1; lin >= 0; lin--)
         {
-            sum = 0;
-#pragma omp for schedule(runtime) reduction(- : sum)
+#pragma omp for schedule(runtime) reduction(+ : sum)
             for (col = lin + 1; col < n; col++)
                 sum -= s->A[lin][col] * s->x[col];
 #pragma omp single
             {
                 sum += s->b[lin];
                 s->x[lin] = sum / s->A[lin][lin];
+                sum = 0.0;
             }
         }
     }
@@ -199,9 +199,9 @@ void algorimo_colunas_paralelo(SistemaLinear *s, int num_threads)
 #pragma omp for schedule(runtime)
         for (lin = 0; lin < n; lin++)
             s->x[lin] = s->b[lin];
-#pragma omp barrier
         for (col = n - 1; col >= 0; col--)
         {
+#pragma omp single
             s->x[col] /= s->A[col][col];
 #pragma omp for schedule(runtime)
             for (lin = 0; lin < col; lin++)
