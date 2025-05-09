@@ -8,5 +8,6 @@ Fila *cria_fila();
 void fila_insere(Fila *f, char *linha);
 char *fila_retira(Fila *f);
 void fila_libera(Fila *f);
+int fila_vazia(Fila *f);
 
 #endif

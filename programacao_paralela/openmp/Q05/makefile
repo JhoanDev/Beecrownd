@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -fopenmp -g -lm
-SRC = consumidora.c
+SRC = consumidora.c fila.c
 
 all: main
 

@@ -58,7 +58,7 @@ char *fila_retira(Fila *f)
 
     f->inicio = aux->prox;
     if (!f->inicio)
-        f->fim == NULL;
+        f->fim = NULL;
 
     f->tam--;
     free(aux);
@@ -73,4 +73,9 @@ void fila_libera(Fila *f)
         free(linha);
     }
     free(f);
+}
+
+int fila_vazia(Fila *f){
+    if(f->tam) return 0;
+    return 1;
 }
