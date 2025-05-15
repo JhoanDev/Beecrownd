@@ -1,9 +1,0 @@
-VARIAVEIS=20000
-THREADS=8
-SCHEDULE="static"
-NUM_THREADS=8
-
-echo "Executando com $NUM_THREADS threads matriz tamanho $VARIAVEIS x $VARIAVEIS e schedule $SCHEDULE"
-export OMP_SCHEDULE=$SCHEDULE
-export OMP_NUM_THREADS=$NUM_THREADS
-./main "$NUM_THREADS" "$VARIAVEIS"

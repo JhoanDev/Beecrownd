@@ -48,10 +48,7 @@ void fila_insere(Fila *f, char *linha)
 char *fila_retira(Fila *f)
 {
     if (f->tam == 0)
-    {
-        printf("Nao tem o que tirar kkk\n");
         return NULL;
-    }
 
     No *aux = f->inicio;
     char *line = aux->linha;
@@ -75,7 +72,9 @@ void fila_libera(Fila *f)
     free(f);
 }
 
-int fila_vazia(Fila *f){
-    if(f->tam) return 0;
+int fila_vazia(Fila *f)
+{
+    if (f->tam)
+        return 0;
     return 1;
 }

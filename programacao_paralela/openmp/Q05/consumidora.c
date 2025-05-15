@@ -39,19 +39,13 @@ void produtor(int my_rank, Fila *fila, int *flag)
 
 void consumidor(int my_rank, Fila *fila, int *flag, int *count_tokens)
 {
-    while (1)
+    char *linha = NULL;
+
+    while (linha || *flag != 0)
     {
-        char *linha = NULL;
-        int fila_vazia_local;
 
 #pragma omp critical
-        {
-            fila_vazia_local = fila_vazia(fila);
-            if (!fila_vazia_local)
-            {
-                linha = fila_retira(fila);
-            }
-        }
+        linha = fila_retira(fila);
 
         if (linha != NULL)
         {
@@ -65,15 +59,7 @@ void consumidor(int my_rank, Fila *fila, int *flag, int *count_tokens)
             }
             free(linha);
         }
-        else
-        {
-#pragma omp flush(flag)
-            if (*flag == 0 && fila_vazia_local)
-            {
-                break;
-            }
-            usleep(100);
-        }
+        usleep(100);
     }
 }
 
@@ -83,17 +69,15 @@ int main(int argc, char *argv[])
         return 0;
 
     int num_ranks = atoi(argv[1]);
-    if (num_ranks & 1)
-        return 0;
 
     int count_tokens = 0;
-    int flag = num_ranks / 2;
+    int flag = (num_ranks & 1) ? (num_ranks / 2 + 1) : (num_ranks / 2);
     Fila *fila = cria_fila();
 
 #pragma omp parallel num_threads(num_ranks) default(none) shared(flag, fila, count_tokens)
     {
         int my_rank = omp_get_thread_num();
-        if (my_rank & 1)
+        if (my_rank < flag)
         {
             produtor(my_rank, fila, &flag);
         }
