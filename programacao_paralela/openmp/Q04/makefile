@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -fopenmp -g -O2 -lm
-SRC = calculate_pi.c
+CFLAGS = -Wall -fopenmp -g -lm
+SRC = gaussian.c
 
 all: main
 

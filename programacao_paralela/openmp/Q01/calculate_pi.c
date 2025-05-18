@@ -14,8 +14,12 @@ estimativa_de_pi = 4 * qtd_no_circulo/((double) num_lancamentos); */
 
 int main(int argc, char *argv[])
 {
+
     if (argc < 3)
         return 0;
+
+    double ini, end;
+    ini = omp_get_wtime();
 
     unsigned int seed = time(NULL), thread_seed;
     int count_ranks = atoi(argv[1]);
@@ -41,6 +45,8 @@ int main(int argc, char *argv[])
 
     estimativa_pi = 4.0 * qtd_circ / (double)num_lancamentos;
 
-    printf("%.10lf", estimativa_pi);
+    printf("%.10lf\n", estimativa_pi);
+    end = omp_get_wtime();
+    printf("%.5lfs\n", end - ini);
     return 0;
 }
