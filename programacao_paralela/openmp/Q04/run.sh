@@ -1,0 +1,6 @@
+VARIAVEIS=10
+NUM_THREADS=8
+
+echo "Executando com $NUM_THREADS threads matriz tamanho $VARIAVEIS x $VARIAVEIS"
+export OMP_NUM_THREADS=$NUM_THREADS
+./main "$NUM_THREADS" "$VARIAVEIS"

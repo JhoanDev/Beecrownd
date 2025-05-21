@@ -255,7 +255,7 @@ for (col = n-1; col >= 0; col--) {
 
 (c) O segundo laço externo do algoritmo orientado a colunas pode ser paralelizado? não, pode ser que duas threads alterem o mesmo valor  no vetor s->x
 
-(d) O laço interno do algoritmo orientado a colunas pode ser paralelizado?
+(d) O laço interno do algoritmo orientado a colunas pode ser paralelizado? sim
 
 (e) Escreva um programa OpenMP para cada loop que puder ser paralelizado. Pode usar `#pragma omp single` se necessário.
 

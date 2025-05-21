@@ -3,6 +3,8 @@
 #include <omp.h>
 #include <time.h>
 #include <string.h>
+#include <float.h>
+#include <math.h>
 
 typedef struct
 {
@@ -12,29 +14,68 @@ typedef struct
     double *x;
 } SistemaLinear;
 
+void algoritmo_linhas_paralelo(SistemaLinear *s, int num_threads);
 SistemaLinear criar_sistema_triangular_superior(int n);
 SistemaLinear criar_sistema_baguncado(SistemaLinear triangular_sup);
 void printar_sistema_com_solucao(SistemaLinear *s);
 void liberar_sistema(SistemaLinear *s);
+void eliminacao_gaussiana_seq(SistemaLinear *s);
+void eliminacao_gaussiana_par(SistemaLinear *s, int num_ranks);
+int verificar_solucoes_iguais(SistemaLinear *s1, SistemaLinear *s2);
 
 int main(int argc, char *argv[])
 {
     if (argc < 3)
         return 0;
 
+    double start_time, end_time;
+    double segs_seq, segs_par;
     int num_ranks = atoi(argv[1]);
     int n = atoi(argv[2]);
 
+    // Cria sistemas
     SistemaLinear triangular_superior = criar_sistema_triangular_superior(n);
-    SistemaLinear sist_1 = criar_sistema_baguncado(triangular_superior);
+    SistemaLinear sist_correto = criar_sistema_baguncado(triangular_superior);
+    SistemaLinear sist_seq = criar_sistema_baguncado(triangular_superior);
+    SistemaLinear sist_par = criar_sistema_baguncado(triangular_superior);
 
-    printar_sistema_com_solucao(&triangular_superior);
-    printar_sistema_com_solucao(&sist_1);
+    algoritmo_linhas_paralelo(&sist_correto, num_ranks);
+
+    start_time = omp_get_wtime();
+    eliminacao_gaussiana_seq(&sist_seq);
+    end_time = omp_get_wtime();
+    segs_seq = end_time - start_time;
+    algoritmo_linhas_paralelo(&sist_seq, num_ranks);
+    if (n <= 10) {
+        printf("\nSistema resolvido sequencialmente:\n");
+        printar_sistema_com_solucao(&sist_seq);
+    }
+    printf("Tempo sequencial: %.5lf\tSolução: %s\n", 
+           segs_seq, 
+           verificar_solucoes_iguais(&sist_correto, &sist_seq) ? "Correta" : "Errada");
+
+    start_time = omp_get_wtime();
+    eliminacao_gaussiana_par(&sist_par, num_ranks);
+    end_time = omp_get_wtime();
+    segs_par = end_time - start_time;
+    algoritmo_linhas_paralelo(&sist_par, num_ranks);
+    
+    if (n <= 10) {
+        printf("\nSistema resolvido paralelamente:\n");
+        printar_sistema_com_solucao(&sist_par);
+    }
+    printf("Tempo paralelo: %.5lf\tSpeedup: %.2fx\tSolução: %s\n", 
+           segs_par, 
+           segs_seq/segs_par,
+           verificar_solucoes_iguais(&sist_correto, &sist_par) ? "Correta" : "Errada");
+
+    liberar_sistema(&triangular_superior);
+    liberar_sistema(&sist_correto);
+    liberar_sistema(&sist_seq);
+    liberar_sistema(&sist_par);
 
     return 0;
 }
-
-
 
 SistemaLinear criar_sistema_baguncado(SistemaLinear triangular_sup)
 {
@@ -139,4 +180,160 @@ void liberar_sistema(SistemaLinear *s)
     s->A = NULL;
     s->b = NULL;
     s->x = NULL;
+}
+
+void algoritmo_linhas_paralelo(SistemaLinear *s, int num_threads)
+{
+    int lin, col;
+    int n = s->n;
+    double sum = 0.0;
+
+#pragma omp parallel num_threads(num_threads) default(none) private(lin) shared(col, s, n, sum)
+    {
+        for (lin = n - 1; lin >= 0; lin--)
+        {
+#pragma omp for schedule(runtime) reduction(+ : sum)
+            for (col = lin + 1; col < n; col++)
+                sum -= s->A[lin][col] * s->x[col];
+#pragma omp single
+            {
+                sum += s->b[lin];
+                s->x[lin] = sum / s->A[lin][lin];
+                sum = 0.0;
+            }
+        }
+    }
+}
+
+void eliminacao_gaussiana_seq(SistemaLinear *s)
+{
+    int n = s->n;
+    double **A = s->A;
+    double *B = s->b;
+    int i, j, k;
+    double max;
+    int max_row;
+
+    for (k = 0; k < n - 1; k++)
+    {
+        max = fabs(A[k][k]);
+        max_row = k;
+
+        for (i = k + 1; i < n; i++)
+        {
+            if (fabs(A[i][k]) > max)
+            {
+                max_row = i;
+                max = fabs(A[i][k]);
+            }
+        }
+
+        if (max_row != k)
+        {
+            double *aux_row = A[k];
+            A[k] = A[max_row];
+            A[max_row] = aux_row;
+
+            double aux_var = B[k];
+            B[k] = B[max_row];
+            B[max_row] = aux_var;
+        }
+
+        for (i = k + 1; i < n; i++)
+        {
+            double fator = A[i][k] / A[k][k];
+            for (j = k; j < n; j++)
+            {
+                A[i][j] -= fator * A[k][j];
+            }
+            B[i] -= fator * B[k];
+        }
+    }
+}
+
+void eliminacao_gaussiana_par(SistemaLinear *s, int num_ranks)
+{
+    int n = s->n;
+    double **A = s->A;
+    double *B = s->b;
+    double max;
+    int i, j, k, max_row;
+
+#pragma omp parallel default(none) num_threads(num_ranks) private(i, j, k) shared(n, A, B, max, max_row)
+    {
+        for (k = 0; k < n - 1; k++)
+        {
+#pragma omp single
+            {
+                max = fabs(A[k][k]);
+                max_row = k;
+            }
+            double local_max = max;
+            int local_max_row = max_row;
+
+#pragma omp for nowait
+            for (i = k + 1; i < n; i++)
+            {
+                double current = fabs(A[i][k]);
+                if (current > local_max)
+                {
+                    local_max = current;
+                    local_max_row = i;
+                }
+            }
+
+#pragma omp critical
+            {
+                if (local_max > max)
+                {
+                    max = local_max;
+                    max_row = local_max_row;
+                }
+            }
+
+#pragma omp single
+            {
+                if (max_row != k)
+                {
+                    double *aux_row = A[k];
+                    A[k] = A[max_row];
+                    A[max_row] = aux_row;
+
+                    double aux_var = B[k];
+                    B[k] = B[max_row];
+                    B[max_row] = aux_var;
+                }
+            }
+        }
+#pragma omp for
+        for (i = k + 1; i < n; i++)
+        {
+            double fator = A[i][k] / A[k][k];
+            for (j = k; j < n; j++)
+            {
+                A[i][j] -= fator * A[k][j];
+            }
+            B[i] -= fator * B[k];
+        }
+    }
+}
+
+int verificar_solucoes_iguais(SistemaLinear *s1, SistemaLinear *s2)
+{
+    if (s1->n != s2->n)
+    {
+        return 0;
+    }
+
+    const double tol = 1e-10;
+
+    for (int i = 0; i < s1->n; i++)
+    {
+        if (fabs(s1->x[i] - s2->x[i]) > tol)
+        {
+            return 0;
+        }
+    }
+
+    return 1;
 }

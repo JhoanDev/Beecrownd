@@ -45,7 +45,8 @@ void count_sort_paralelo(int a[], int n, int count_ranks)
     int i, j, count;
     int *temp = malloc(n * sizeof(int));
 
-#pragma omp parallel for num_threads(count_ranks) default(none) private(count, i, j) shared(temp, a, n)
+#pragma omp parallel for num_threads(count_ranks) default(none) \
+private(count, i, j) shared(temp, a, n)
     for (i = 0; i < n; i++)
     {
         count = 0;
@@ -82,7 +83,8 @@ void count_sort_memcpy_paralelo(int a[], int n, int count_ranks)
     int part_size = n / count_ranks;
     int my_rank, inicio, fim, tam;
 
-#pragma omp parallel num_threads(count_ranks) default(none) private(my_rank, inicio, fim, tam) shared(a, temp, n, rest, part_size)
+#pragma omp parallel num_threads(count_ranks) default(none) \
+ private(my_rank, inicio, fim, tam) shared(a, temp, n, rest, part_size)
     {
         my_rank = omp_get_thread_num();
 
