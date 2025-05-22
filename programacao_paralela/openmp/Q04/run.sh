@@ -1,4 +1,4 @@
-VARIAVEIS=10
+VARIAVEIS=20000
 NUM_THREADS=8
 
 echo "Executando com $NUM_THREADS threads matriz tamanho $VARIAVEIS x $VARIAVEIS"
