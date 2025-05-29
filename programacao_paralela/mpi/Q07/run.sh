@@ -1,6 +1,6 @@
 #!/bin/bash
 NP=8
-VAR=12345678900
+VAR=1234567890
 EXEC=main
 
 make clean && make
