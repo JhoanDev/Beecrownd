@@ -7,6 +7,8 @@ using namespace std;
 #define f first
 #define s second
 
+typedef unsigned long long llu;
+typedef unsigned int ui;
 typedef long long ll;
 
 const int INF = 0x3f3f3f3f;
