@@ -3,4 +3,4 @@ NP=18
 EXEC=main
 
 make clean && make
-mpirun --enable-32bits-pci-domain -np $NP ./$EXEC 
+mpirun -np $NP --enable-32bits-pci-domain ./$EXEC 
