@@ -1,6 +1,6 @@
 #!/bin/bash
-NP=18
+NP=7
 EXEC=main
 
 make clean && make
-mpirun -np $NP  ./$EXEC 
+mpirun -np $NP ./$EXEC 
