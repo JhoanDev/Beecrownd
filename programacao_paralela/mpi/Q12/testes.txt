@@ -1,0 +1,2 @@
+antes da otimização
+Tempo de execucao: 6.405939 segundos
