@@ -6,7 +6,6 @@
 #define comm MPI_COMM_WORLD
 
 int *gen_array(int n);
-// MODIFICADO: A assinatura da função agora usa long long int
 void reduce_arvore(long long int *soma_local, int my_rank, int comm_sz);
 
 int main(int argc, char *argv[])
@@ -17,7 +16,6 @@ int main(int argc, char *argv[])
 
     MPI_Init(&argc, &argv);
 
-    // ... (o resto do código de inicialização não muda) ...
     MPI_Comm_size(comm, &comm_sz);
     MPI_Comm_rank(comm, &my_rank);
 
@@ -32,9 +30,9 @@ int main(int argc, char *argv[])
         else
         {
             size_array = atoi(argv[1]);
-            if (size_array <= 0)
+            if (size_array <= 0 || size_array % comm_sz != 0)
             {
-                fprintf(stderr, "Erro: O tamanho do array deve ser um número positivo.\n");
+                fprintf(stderr, "Erro: O tamanho do array deve ser um número positivo e divisivel pelo numero de processos.\n");
                 size_array = -1;
             }
         }
@@ -82,7 +80,7 @@ int main(int argc, char *argv[])
         MPI_Recv(local_array_a, chunk_size, MPI_INT, 0, 0, comm, MPI_STATUS_IGNORE);
         MPI_Recv(local_array_b, chunk_size, MPI_INT, 0, 1, comm, MPI_STATUS_IGNORE);
     }
-    
+
     local_prod_esc = 0;
     for (i = 0; i < chunk_size; i++)
         local_prod_esc += (long long int)local_array_a[i] * local_array_b[i];
